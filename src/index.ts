@@ -28,11 +28,6 @@ interface ExecuteCodeArgs {
   memory?: number;
 }
 
-interface SandboxError extends Error {
-  code?: string;
-  message: string;
-}
-
 class JSSandbox {
   private static readonly DEFAULT_TIMEOUT = 5000; // 5 secondes
   private static readonly DEFAULT_MEMORY = 50 * 1024 * 1024; // 50 MB
@@ -83,8 +78,8 @@ class JSSandbox {
     executionTime: number;
     memoryUsage: number;
   }> {
-    const timeout = args.timeout || JSSandbox.DEFAULT_TIMEOUT;
-    const memory = args.memory || JSSandbox.DEFAULT_MEMORY;
+    const timeout = args.timeout ?? JSSandbox.DEFAULT_TIMEOUT;
+    const memory = args.memory ?? JSSandbox.DEFAULT_MEMORY;
     const consoleOutput: string[] = [];
 
     try {
@@ -137,13 +132,13 @@ class JSSandbox {
 }
 
 class JSSandboxServer {
-  private server: Server;
-  private sandbox: JSSandbox;
+  private readonly server: Server;
+  private readonly sandbox: JSSandbox;
 
   constructor() {
     this.server = new Server(
       {
-        name: 'js-sandbox',
+        name: 'js-sandbox-mcp-server',
         version: '1.0.0',
       },
       {
