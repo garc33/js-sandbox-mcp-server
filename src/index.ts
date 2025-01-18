@@ -11,7 +11,7 @@ import { NodeVM, VMScript } from 'vm2';
 import { parse } from 'acorn';
 import { createLogger, format, transports } from 'winston';
 
-// Configuration du logger
+// Logger configuration
 const logger = createLogger({
   format: format.combine(
     format.timestamp(),
@@ -29,7 +29,7 @@ interface ExecuteCodeArgs {
 }
 
 class JSSandbox {
-  private static readonly DEFAULT_TIMEOUT = 5000; // 5 secondes
+  private static readonly DEFAULT_TIMEOUT = 5000; // 5 seconds
   private static readonly DEFAULT_MEMORY = 50 * 1024 * 1024; // 50 MB
   private static readonly FORBIDDEN_PATTERNS = [
     'process',
@@ -43,19 +43,19 @@ class JSSandbox {
 
   private validateCode(code: string): void {
     try {
-      // Analyse statique du code avec Acorn
+      // Static code analysis with Acorn
       parse(code, { ecmaVersion: 'latest' });
 
-      // Vérification des motifs interdits
+      // Check for forbidden patterns
       for (const pattern of JSSandbox.FORBIDDEN_PATTERNS) {
         if (code.includes(pattern)) {
-          throw new Error(`Usage interdit de '${pattern}'`);
+          throw new Error(`Forbidden use of '${pattern}'`);
         }
       }
     } catch (error: any) {
       throw new McpError(
         ErrorCode.InvalidRequest,
-        `Erreur de validation du code: ${error.message}`
+        `Code validation error: ${error.message}`
       );
     }
   }
@@ -83,29 +83,29 @@ class JSSandbox {
     const consoleOutput: string[] = [];
 
     try {
-      // Validation du code
+      // Code validation
       this.validateCode(args.code);
 
-      // Création du bac à sable
+      // Create sandbox
       const vm = this.createSandbox(timeout, memory);
 
-      // Redirection de la console
+      // Console redirection
       vm.on('console.log', (...args) => {
         consoleOutput.push(args.map(arg => String(arg)).join(' '));
       });
 
-      // Mesure du temps d'exécution
+      // Measure execution time
       const startTime = process.hrtime();
 
-      // Compilation et exécution du code
+      // Compile and execute code
       const script = new VMScript(args.code);
       const result = await vm.run(script);
 
       const [seconds, nanoseconds] = process.hrtime(startTime);
       const executionTime = seconds * 1000 + nanoseconds / 1000000;
 
-      // Journalisation de l'exécution
-      logger.info('Code exécuté avec succès', {
+      // Log execution
+      logger.info('Code executed successfully', {
         executionTime,
         memoryUsage: process.memoryUsage().heapUsed,
         codeLength: args.code.length
@@ -118,14 +118,14 @@ class JSSandbox {
         memoryUsage: process.memoryUsage().heapUsed
       };
     } catch (error: any) {
-      logger.error('Erreur d\'exécution', {
+      logger.error('Execution error', {
         error: error.message,
         code: args.code
       });
 
       throw new McpError(
         ErrorCode.InternalError,
-        `Erreur d'exécution: ${error.message}`
+        `Execution error: ${error.message}`
       );
     }
   }
@@ -152,7 +152,7 @@ class JSSandboxServer {
     this.setupHandlers();
     
     this.server.onerror = (error) => {
-      logger.error('Erreur serveur MCP', { error });
+      logger.error('MCP Server error', { error });
       console.error('[MCP Error]', error);
     };
 
@@ -163,28 +163,28 @@ class JSSandboxServer {
   }
 
   private setupHandlers() {
-    // Liste des outils disponibles
+    // List of available tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
         {
           name: 'execute_js',
-          description: 'Exécute du code JavaScript dans un environnement isolé',
+          description: 'Execute JavaScript code in an isolated environment',
           inputSchema: {
             type: 'object',
             properties: {
               code: {
                 type: 'string',
-                description: 'Code JavaScript à exécuter'
+                description: 'JavaScript code to execute'
               },
               timeout: {
                 type: 'number',
-                description: 'Délai maximum d\'exécution en millisecondes',
+                description: 'Maximum execution time in milliseconds',
                 minimum: 100,
                 maximum: 30000
               },
               memory: {
                 type: 'number',
-                description: 'Limite de mémoire en octets',
+                description: 'Memory limit in bytes',
                 minimum: 1024 * 1024,
                 maximum: 100 * 1024 * 1024
               }
@@ -195,12 +195,12 @@ class JSSandboxServer {
       ]
     }));
 
-    // Gestionnaire d'exécution du code
+    // Code execution handler
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       if (request.params.name !== 'execute_js') {
         throw new McpError(
           ErrorCode.MethodNotFound,
-          `Outil inconnu: ${request.params.name}`
+          `Unknown tool: ${request.params.name}`
         );
       }
 
@@ -208,7 +208,7 @@ class JSSandboxServer {
       if (!args || typeof args.code !== 'string') {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          'Le paramètre "code" est requis et doit être une chaîne de caractères'
+          'The "code" parameter is required and must be a string'
         );
       }
 
@@ -234,7 +234,7 @@ class JSSandboxServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    logger.info('Serveur JS Sandbox démarré');
+    logger.info('JS Sandbox server started');
   }
 }
 
