@@ -2,6 +2,10 @@
 
 A Model Context Protocol server that provides a secure JavaScript execution environment.
 
+<a href="https://glama.ai/mcp/servers/agatnhlgki">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/agatnhlgki/badge" alt="JavaScript Sandbox Server MCP server" />
+</a>
+
 ## Features
 
 ### Tools
