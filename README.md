@@ -2,6 +2,8 @@
 
 # js-sandbox MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@garc33/js-sandbox-mcp-server)](https://smithery.ai/server/@garc33/js-sandbox-mcp-server)
+
 A Model Context Protocol server that provides a secure JavaScript execution environment.
 
 <a href="https://glama.ai/mcp/servers/agatnhlgki">
@@ -41,6 +43,14 @@ npm run watch
 ```
 
 ## Installation
+
+### Installing via Smithery
+
+To install JavaScript Sandbox Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@garc33/js-sandbox-mcp-server):
+
+```bash
+npx -y @smithery/cli install @garc33/js-sandbox-mcp-server --client claude
+```
 
 To use with Claude Desktop, add the server configuration:
 
