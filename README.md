@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/garc33-js-sandbox-mcp-server-badge.png)](https://mseep.ai/app/garc33-js-sandbox-mcp-server)
+
 # js-sandbox MCP Server
 
 A Model Context Protocol server that provides a secure JavaScript execution environment.
