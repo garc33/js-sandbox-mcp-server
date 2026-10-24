@@ -2,7 +2,7 @@
 
 # js-sandbox MCP Server
 
-[![smithery badge](https://smithery.ai/badge/@garc33/js-sandbox-mcp-server)](https://smithery.ai/server/@garc33/js-sandbox-mcp-server)
+[![LightNow capabilities](https://lightnow.ai/badge/io.github.garc33/js-sandbox-mcp-server)](https://lightnow.ai/servers/io.github.garc33/js-sandbox-mcp-server)
 
 A Model Context Protocol server that provides a secure JavaScript execution environment.
 
